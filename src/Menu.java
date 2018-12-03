@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 /*@author Laura Hutchison
@@ -45,15 +46,39 @@ public class Menu {
 		
 		 if(userChoice == 1) {
 			 
-			 Board board = new Board(); 
-		     Othello.PvP(board);
+			 Board board = new Board();
+			 
+			 System.out.println("Who is going first?\nEnter 1 for Black.\nEnter 2 for White.");
+				
+				boolean isNumeric = false;
+				
+				while (!isNumeric) {
+					try {
+						Othello.turn = tempInfo.nextInt();
+						while(Othello.turn < 1 || Othello.turn > 2 ) {
+							System.out.print("Enter 1 or 2.");
+							Othello.turn = tempInfo.nextInt();
+						}
+						isNumeric = true;// numeric value entered, so break the while loop
+					} catch (InputMismatchException ime) {
+						// Display Error message
+						System.out.println("Invalid input.");
+						tempInfo.nextLine();// Advance the scanner
+					}
+				}
+				
+			Othello.PvP(board);
 		     
 			Menu.displayMenu();
 		}
 		 
 		if(userChoice == 2) {
-					
-			Menu.displayMenu();
+			Board load = new Board();
+			
+			load.board = Othello.loadGame(); 
+			
+			Othello.PvP(load);
+			
 		}
 		
 		if(userChoice == 3) {
