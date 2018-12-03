@@ -282,60 +282,6 @@ public int changeX(char x) {
 	for(int i=0;i<8;++i)if(list[i]==Character.toLowerCase(x)||list[i]==Character.toUpperCase(x))return i;
     return -1; // Illegal move received
 }
-
-public static char[][] loadGame() {
-	Scanner input = new Scanner(System.in);
-	
-	FileReader readText = null;
-	BufferedReader bufferedReader = null;
-	String holdChoice = new String();
-	
-	System.out.println("Welcome to load menu.");
-	System.out.println("Enter a save 1, 2, or 3 to be read. ");
-	holdChoice = input.nextLine();
-	
-	char board[][] = new char [8][8];
-
-	 File file = new File("save" + holdChoice + ".txt");
-	 boolean test;
-     System.out.println("File = " + file.getAbsolutePath());
-
-     test = file.exists();
-	
-	if(test == true) {
-	
-	//try the file and writing to console in case it is corrupt in some way
-	try {
-		readText = new FileReader("save" + holdChoice + ".txt");
-		bufferedReader = new BufferedReader(readText);
-		
-		String nextLine = bufferedReader.readLine();
-		
-		for(int i = 0; i < 8; i++) {
-			for(int k = 0; k < 8; k++) {
-		while (nextLine !=null) {
-			
-			board[i][k] = nextLine.charAt(0);
-			nextLine = bufferedReader.readLine();
-				}}
-		
-		bufferedReader.close();
-		}
-	}
-	//catch exception so our program doesn't crash
-	catch(IOException e) {
-		System.out.println("There is no save game in that slot!");
-	}
-	}
-	
-	//if test = false then restart from menu
-	if(test == false) {
-		
-		System.out.println("Please try again. File not found.");
-		}
-		
-	return board;
-}
 	
 }
 

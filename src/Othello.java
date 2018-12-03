@@ -19,6 +19,7 @@ public class Othello {
         int result;
         Boolean skip;
         String input;
+        int playerNum;
         
         do{ 
             skip = false;
@@ -40,14 +41,15 @@ public class Othello {
             }
 
             if(!skip){
-                System.out.println("Place move (Black): ");
-                input = scan.next();
+            	playerNum = 1;
+            	input = placeMove(playerNum, board);
                 
                 while(input.length() > 2) {
                 	System.out.println("Try again!");
                 	input = scan.next();
                 	
                 }
+  
                 move.num = board.changeX(input.charAt(0));
                 move.let = (Integer.parseInt(input.charAt(1)+"")-1); 
                 
@@ -69,6 +71,7 @@ public class Othello {
                 board.moveSet(move, 'B', 'W');
                 board.scoreUpdate();
                 System.out.println("\nBlack: "+board.blackScore+" White: "+board.whiteScore);
+            
             }
             skip = false;
 
@@ -88,11 +91,8 @@ public class Othello {
             }
 
             if(!skip){ 
-            System.out.println("It is White's turn. ");
-            
-            
-            
-            input = scan.next();
+            	playerNum = 2;
+            	input = placeMove(playerNum, board);
             
             while(input.length() > 2) {
             	System.out.println("Try again!");
@@ -160,6 +160,7 @@ public class Othello {
 				nextLine = bufferedReader.readLine();
 					}}
 			
+			
 			bufferedReader.close();
 			}
 		}
@@ -178,39 +179,85 @@ public class Othello {
 		return board;
 	}
 	
-	public static void saveGame(char board[][]) {
+	public static void saveGame(Board board, int player) {
 		
 		Scanner input = new Scanner(System.in);
-		String hold = new String();
 		
 		System.out.println("Please enter slot 1-3 to save the game.");
-		hold = input.nextLine();
-		int check = hold.charAt(0) + 0;
+		int check = input.nextInt();
+		
 		if(check > 3 || check < 1) {
 			while(check > 3 || check < 1) {
 				System.out.println("Number out of bounds.\nPlease enter slot 1-3 to save the game.");
-				hold = input.nextLine();
-				check = hold.charAt(0) + 0;
+				check = input.nextInt();
 			}
 		}
-		
-		try {
-			
-			PrintStream ps = new PrintStream(new FileOutputStream("save" + hold  + ".txt"));
-			
-			for(int i = 0; i < 8; i++) {
-				for(int k = 0; k < 8; k++) {	
-				char s = board[i][k];
-				ps.println(s);
-			}
-			}
-			ps.close();
-			} catch (FileNotFoundException e) {
-			System.out.println(e.getMessage());
-			}
-			}
-		
+		else {
+			try {
+				
+				PrintStream ps = new PrintStream(new FileOutputStream("save" + check + ".txt"));
+				
+				for(int i = 0; i < 8; i++) {
+					for(int k = 0; k < 8; k++) {	
+					char s = board.board[i][k];
+					ps.println(s);
+				}
+				}
+				ps.println(player);
+				ps.close();
+				} catch (FileNotFoundException e) {
+				System.out.println(e.getMessage());
+				}
+		System.out.println("The game has been saved in slot " + check + ".");
+		}
 	}
+
+	public static String placeMove(int playerNum, Board board) {
+		
+		int hold = playerNum;
+		String player = new String();
+		Scanner scan = new Scanner(System.in);
+		String input = new String();
+		int choice;
+		
+		if(hold == 1) {
+			player = ("Black");
+		}
+		if(hold == 2) {
+			player = ("White");
+		}
+		
+		System.out.println("1. Place a move.\n2. Save game.\n3. Save and exit.");
+		choice = scan.nextInt();
+		while(choice > 3 || choice < 1) {
+			System.out.println("That is not a valid choice.");
+			choice = scan.nextInt();
+		}
+		
+		if(choice == 1) {
+		 System.out.println("\nPlace move Player + : ");
+         input = scan.next();
+         
+         while(input.length() > 2) {
+         	System.out.println("Try again!");
+         	input = scan.next();
+         }
  
+		}
+		if(choice == 2) {
+			saveGame(board, hold);
+			System.out.println("\nPlace move Player + : ");
+	         input = scan.next();
+	         
+	         while(input.length() > 2) {
+	         	System.out.println("Try again!");
+	         	input = scan.next();
+	         }
+		}
+		
+	return input;
+	}
+	
+}
 	
 
