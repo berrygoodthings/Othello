@@ -242,19 +242,11 @@ public class Othello {
 			HashSet<Board.XY> whiteLocation = board.validSpots('W', 'B');
 
 			board.displayValidMoves(blackLocation, 'B', 'W');
-			result = board.endGame(whiteLocation, blackLocation);
-
-			if (result == 0) {
-				System.out.println("Draw!");
-				break;
-			} else if (result == 1) {
-				System.out.println("White wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
-				break;
-			} else if (result == 2) {
-				System.out.println("Black wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			int o = board.endGame(whiteLocation, blackLocation);
+			boolean end = board.gameOver(o, board);
+			if(end) {
 				break;
 			}
-
 			if (blackLocation.isEmpty()) {
 				System.out.println("Black has to skip. White's turn!");
 				skip = true;
@@ -300,16 +292,9 @@ public class Othello {
 			blackLocation = board.validSpots('B', 'W');
 
 			board.displayValidMoves(whiteLocation, 'W', 'B');
-			result = board.endGame(whiteLocation, blackLocation);
-
-			if (result == 0) {
-				System.out.println("Draw!");
-				break;
-			} else if (result == 1) {
-				System.out.println("White wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
-				break;
-			} else if (result == 2) {
-				System.out.println("Black wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			o = board.endGame(whiteLocation, blackLocation);
+			end = board.gameOver(o, board);
+			if(end) {
 				break;
 			}
 
@@ -367,16 +352,9 @@ public class Othello {
 			HashSet<Board.XY> whiteLocation = board.validSpots('W', 'B');
 
 			board.displayValidMoves(whiteLocation, 'W', 'B');
-			result = board.endGame(blackLocation, whiteLocation);
-
-			if (result == 0) {
-				System.out.println("Draw!");
-				break;
-			} else if (result == 1) {
-				System.out.println("White wins: " + board.whiteScore + ":" + board.blackScore);
-				break;
-			} else if (result == 2) {
-				System.out.println("Black wins: " + board.blackScore + ":" + board.whiteScore);
+			int o = board.endGame(whiteLocation, blackLocation);
+			boolean end = board.gameOver(o, board);
+			if(end) {
 				break;
 			}
 
@@ -425,16 +403,10 @@ public class Othello {
 			blackLocation = board.validSpots('B', 'W');
 
 			board.displayValidMoves(blackLocation, 'B', 'W');
-			result = board.endGame(whiteLocation, blackLocation);
-
-			if (result == 0) {
-				System.out.println("It is a draw.");
-				break;
-			} else if (result == 1) {
-				System.out.println("White wins: " + board.whiteScore + ":" + board.blackScore);
-				break;
-			} else if (result == -1) {
-				System.out.println("Black wins: " + board.blackScore + ":" + board.whiteScore);
+			
+			o = board.endGame(whiteLocation, blackLocation);
+			end = board.gameOver(o, board);
+			if(end) {
 				break;
 			}
 

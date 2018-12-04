@@ -17,19 +17,24 @@ public class Menu {
 	int userChoice;
 	
 	public static void main(String[] args) {
+		
+		boolean quit = false;
 
 		Scanner tempInfo = new Scanner(System.in);
 		//@param newMenu creates instance of menu to display options to user
 		Menu newMenu = new Menu();
+		do {
 		newMenu.processUserChoices(tempInfo);
+		}while(quit = false);
 	}
 	
 	public static void displayMenu() {
 		System.out.println("Welcome to Othello.");
 		System.out.println("Please choose from the following options.");
-		System.out.println("1: Start a new game of Othello");
+		System.out.println("1. Start a new game of Othello");
 		System.out.println("2. Load a saved game");
 		System.out.println("3. How to play");
+		System.out.println("4. Quit");
 	}
 	
 	
@@ -81,29 +86,15 @@ public class Menu {
 			
 		}
 		
-		if(userChoice == 3) {
-			Menu.displayMenu();
-		}
-		
 		if(userChoice == 4) {
-			Menu.displayMenu();
-		}
-		
-		if(userChoice == 5) {
 			System.out.println("Thank you for playing. Goodbye.");
 			System.exit(0);
 		}
-		
-		if(userChoice >= 6 || userChoice <= 0) {
-			System.out.println("Please enter a valid menu option.");
-			
-		}
-		
 		do{
 			processUserChoices(tempInfo);
 		}
 		while(userChoice != 5);
 	}
-	
 }
+	
 

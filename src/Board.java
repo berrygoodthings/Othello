@@ -1,3 +1,4 @@
+import java.awt.Point;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -18,6 +19,9 @@ public class Board {
 	char clear = '_';
 
 	char[] list = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
+
+	private static Point[] checkAround = new Point[] { new Point(1, 0), new Point(1, 1), new Point(0, 1),
+			new Point(-1, 1), new Point(-1, 0), new Point(-1, -1), new Point(0, -1), new Point(1, -1), };
 
 	public class XY {
 		int let;
@@ -59,93 +63,45 @@ public class Board {
 
 	public void validSpaces(char player, char opponent, HashSet<XY> Spots) {
 
+		char clear = '_';
+		int up = 1;
+		int dn = -1;
+
 		for (int i = 0; i < 8; ++i) {
 			for (int k = 0; k < 8; ++k) {
-				
-				//if spaces on a board = opponent then
-				if (board[i][k] == opponent) {
-					int I = i;
-					int K = k;
-					if (i - 1 >= 0 && k - 1 >= 0 && board[--i][--k] == '_') {
-						++i;
-						++k;
-						while (i <= 6 && k <= 6 && board[i][k] == opponent) {
-							i++;
-							k++;
-						}
-						if (i <= 7 && k <= 7 && board[i][k] == player)
-							Spots.add(new XY(I - 1, K - 1));
-					}
-					i = I;
-					k = K;
-					if (i - 1 >= 0 && board[i - 1][k] == '_') {
-						i = i + 1;
-						while (i < 7 && board[i][k] == opponent)
-							i++;
-						if (i <= 7 && board[i][k] == player)
-							Spots.add(new XY(I - 1, K));
-					}
-					i = I;
-					if (i - 1 >= 0 && k + 1 <= 7 && board[i - 1][k + 1] == '_') {
-						i = i + 1;
-						k = k - 1;
-						while (i < 7 && k > 0 && board[i][k] == opponent) {
-							i++;
-							k--;
-						}
-						if (i <= 7 && k >= 0 && board[i][k] == player)
-							Spots.add(new XY(I - 1, K + 1));
-					}
-					i = I;
-					k = K;
-					if (k - 1 >= 0 && board[i][k - 1] == '_') {
-						k = k + 1;
-						while (k < 7 && board[i][k] == opponent)
-							k++;
-						if (k <= 7 && board[i][k] == player)
-							Spots.add(new XY(I, K - 1));
-					}
-					k = K;
-					if (k + 1 <= 7 && board[i][k + 1] == '_') {
-						k = k - 1;
-						while (k > 0 && board[i][k] == opponent)
-							k--;
-						if (k >= 0 && board[i][k] == player)
-							Spots.add(new XY(I, K + 1));
-					}
-					k = K;
-					if (i + 1 <= 7 && k - 1 >= 0 && board[i + 1][k - 1] == '_') {
-						i = i - 1;
-						k = k + 1;
-						while (i > 0 && k < 7 && board[i][k] == opponent) {
-							i--;
-							k++;
-						}
-						if (i >= 0 && k <= 7 && board[i][k] == player)
-							Spots.add(new XY(I + 1, K - 1));
-					}
-					i = I;
-					k = K;
-					if (i + 1 <= 7 && board[i + 1][k] == '_') {
-						i = i - 1;
-						while (i > 0 && board[i][k] == opponent)
-							i--;
-						if (i >= 0 && board[i][k] == player)
-							Spots.add(new XY(I + 1, K));
-					}
-					i = I;
-					if (i + 1 <= 7 && k + 1 <= 7 && board[i + 1][k + 1] == '_') {
-						--i;
-						--k;
-						while (i > 0 && k > 0 && board[i][k] == opponent) {
-							i--;
-							k--;
-						}
-						if (i >= 0 && k >= 0 && board[i][k] == player)
-							Spots.add(new XY(I + 1, K + 1));
-					}
-					i = I;
-					k = K;
+
+				// if spaces on a board = opponent then
+				checkMethod(k, i, opponent, player, Spots, 1, 1);
+				checkMethod(k, i, opponent, player, Spots, 1, -1);
+				checkMethod(k, i, opponent, player, Spots, -1, 1);
+				checkMethod(k, i, opponent, player, Spots, -1, -1);
+				checkMethod(k, i, opponent, player, Spots, -1, 0);
+				checkMethod(k, i, opponent, player, Spots, 0, -1);
+				checkMethod(k, i, opponent, player, Spots, 0, 1);
+				checkMethod(k, i, opponent, player, Spots, 1, 0);
+			}
+		}
+
+	}
+
+	public void checkMethod(int k, int i, char opponent, char player, HashSet<XY> Spots, int x, int y) {
+
+		if (board[i][k] == opponent) {
+			int K = k;
+			int I = i;
+
+			i = i + x;
+			k = k + y;
+
+			if (i >= 0 && i <= 7 && k >= 0 && k <= 7 && board[i][k] == '_') {
+				i = i - x;
+				k = k - y;
+				while (i < 7 && i > 0 && k < 7 && k > 0 && board[i][k] == opponent) {
+					i = i - x;
+					k = k - y;
+				}
+				if (i <= 7 && i >= 0 && k <= 7 && k >= 0 && board[i][k] == player) {
+					Spots.add(new XY(I + x, K + y));
 				}
 			}
 		}
@@ -158,9 +114,9 @@ public class Board {
 		for (int i = 0; i < 8; ++i) {
 			System.out.print(list[i] + " ");
 		}
-		
+
 		System.out.print("\n");
-		
+
 		for (int i = 0; i < 8; ++i) {
 			System.out.print((i + 1) + " ");
 
@@ -175,6 +131,7 @@ public class Board {
 	public int endGame(Set<XY> whiteLocation, Set<XY> blackLocation) {
 
 		scoreUpdate();
+
 		int hold = 3;
 
 		if (pointsToGo == 0) {
@@ -199,6 +156,27 @@ public class Board {
 		}
 
 		return hold;
+	}
+
+	public static boolean gameOver(int hold, Board board) {
+
+		boolean end = false;
+
+		if (hold == 0) {
+			System.out.println("Draw!");
+			end = true;
+		} else if (hold == 1) {
+			System.out.println("White wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			end = true;
+		} else if (hold == 2) {
+			System.out.println("Black wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			end = true;
+
+		} else {
+			end = false;
+		}
+
+		return end;
 	}
 
 	public HashSet<XY> validSpots(char player, char opponent) {
@@ -244,94 +222,84 @@ public class Board {
 		k = K;
 
 		if (--i >= 0 && board[--i][k] == opponent) {
-			i--;
+			i = i - 1;
 			while (i > 0 && board[i][k] == opponent)
 				i--;
 			if (i >= 0 && board[i][k] == player) {
-				while (i != I - 1) {
+				while (i != I - 1)
 					board[++i][k] = player;
-				}
 			}
 		}
 		i = I;
 		if (i - 1 >= 0 && k + 1 <= 7 && board[i - 1][k + 1] == opponent) {
-			--i;
-			++k;
+			i = i - 1;
+			k = k + 1;
 			while (i > 0 && k < 7 && board[i][k] == opponent) {
-				--i;
-				++k;
+				i--;
+				k++;
 			}
 			if (i >= 0 && k <= 7 && board[i][k] == player) {
-				while (i != I - 1 && k != K + 1) {
+				while (i != I - 1 && k != K + 1)
 					board[++i][--k] = player;
-				}
 			}
 		}
 		i = I;
 		k = K;
 		if (k - 1 >= 0 && board[i][k - 1] == opponent) {
-			--k;
+			k = k - 1;
 			while (k > 0 && board[i][k] == opponent)
-				--k;
+				k--;
 			if (k >= 0 && board[i][k] == player) {
-				while (k != K - 1) {
+				while (k != K - 1)
 					board[i][++k] = player;
-				}
 			}
 		}
 		k = K;
 		if (k + 1 <= 7 && board[i][k + 1] == opponent) {
-			k++;
-			while (k < 7 && board[i][k] == opponent) {
+			k = k + 1;
+			while (k < 7 && board[i][k] == opponent)
 				k++;
-			}
 			if (k <= 7 && board[i][k] == player) {
-				while (k != K + 1) {
+				while (k != K + 1)
 					board[i][--k] = player;
-				}
 			}
 		}
 		k = K;
-		if (++i <= 7 && --k >= 0 && board[++i][--k] == opponent) {
-			i++;
-			k--;
+		if (i + 1 <= 7 && k - 1 >= 0 && board[i + 1][k - 1] == opponent) {
+			i = i + 1;
+			k = k - 1;
 			while (i < 7 && k > 0 && board[i][k] == opponent) {
 				i++;
 				k--;
 			}
 			if (i <= 7 && k >= 0 && board[i][k] == player) {
-				while (i != I + 1 && k != K - 1) {
+				while (i != I + 1 && k != K - 1)
 					board[--i][++k] = player;
-				}
 			}
 		}
 		i = I;
 		k = K;
-		if (++i <= 7 && board[++i][k] == opponent) {
+		if (i + 1 <= 7 && board[i + 1][k] == opponent) {
 			i = i + 1;
-			while (i < 7 && board[i][k] == opponent) {
+			while (i < 7 && board[i][k] == opponent)
 				i++;
-			}
 			if (i <= 7 && board[i][k] == player) {
-				while (i != ++I) {
+				while (i != I + 1)
 					board[--i][k] = player;
-				}
 			}
 		}
 		i = I;
 
-		if (++i <= 7 && ++k <= 7 && board[++i][++k] == opponent) {
-			++i;
-			++k;
-
+		if (i + 1 <= 7 && k + 1 <= 7 && board[i + 1][k + 1] == opponent) {
+			i = i + 1;
+			k = k + 1;
 			while (i < 7 && k < 7 && board[i][k] == opponent) {
 				i++;
 				k++;
 			}
 			if (i <= 7 && k <= 7 && board[i][k] == player)
-				while (i != I + 1 && k != K + 1) {
+				while (i != I + 1 && k != K + 1)
 					board[--i][--k] = player;
-				}
 		}
 	}
 
@@ -346,9 +314,7 @@ public class Board {
 
 				if (board[i][k] == white) {
 					whiteScore++;
-				}
-
-				if (board[i][k] == black) {
+				} else if (board[i][k] == black) {
 					blackScore++;
 				} else {
 					pointsToGo++;
@@ -358,10 +324,24 @@ public class Board {
 	}
 
 	public int changeX(char x) {
-		for (int i = 0; i < 8; ++i)
-			if (list[i] == Character.toLowerCase(x) || list[i] == Character.toUpperCase(x)) {
-				return i;
-			}
+		if (x == 'a' || x == 'A') {
+			return 0;
+		} else if (x == 'b' || x == 'B') {
+			return 1;
+		} else if (x == 'c' || x == 'C') {
+			return 2;
+		} else if (x == 'd' || x == 'D') {
+			return 3;
+		} else if (x == 'e' || x == 'E') {
+			return 4;
+		} else if (x == 'f' || x == 'F') {
+			return 5;
+		} else if (x == 'g' || x == 'G') {
+			return 6;
+		} else if (x == 'h' || x == 'H') {
+			return 7;
+		}
+
 		return -1; // Illegal move received
 	}
 
