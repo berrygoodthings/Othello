@@ -1,13 +1,29 @@
-import java.awt.Point;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.HashSet;
-import java.util.Scanner;
 import java.util.Set;
 
+/**
+ * Final project - Intro to Software Development
+ * 
+ * @author Laura Hutchison
+ * @version 1.0
+ *
+ */
+
+// public class Board holds board info and calculates valid moves
+
 public class Board {
+
+	/**
+	 * 
+	 * @param board      char 2d array for holding information on playing board
+	 * @param whiteScore holds current score for white pieces
+	 * @param blackScore holds current score for black pieces
+	 * @param pointsToGo holds spaces left on board to be played
+	 * @param white      holds white char
+	 * @param black      holds black piece char
+	 * @param clear      holds spaces without pieces char
+	 * @param list       holds top line to be displayed above board
+	 */
 
 	public char[][] board = new char[8][8];
 	int whiteScore;
@@ -20,8 +36,15 @@ public class Board {
 
 	char[] list = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H' };
 
-	private static Point[] checkAround = new Point[] { new Point(1, 0), new Point(1, 1), new Point(0, 1),
-			new Point(-1, 1), new Point(-1, 0), new Point(-1, -1), new Point(0, -1), new Point(1, -1), };
+	/**
+	 * @param Class    XY class to set valid points into a hashset, best classed
+	 *                 locally
+	 * @param let      letter variable to num
+	 * @param num      number variable in original coordinates entered
+	 * @param XY       constructor for XY class
+	 * @param hashCode override to return the coordinates
+	 * 
+	 */
 
 	public class XY {
 		int let;
@@ -32,19 +55,14 @@ public class Board {
 			this.num = num;
 		}
 
-		public String toString() {
-			return "[" + let + ", " + num + "]";
-		}
-
-		public boolean equals(Object o) {
-			return o.hashCode() == this.hashCode();
-		}
-
 		public int hashCode() {
 			return Integer.parseInt(let + "" + num);
 		}
 	}
 
+	/**
+	 * @param Board constructor for Board class
+	 */
 	public Board() {
 
 		for (int i = 0; i < 8; i++) {
@@ -61,11 +79,20 @@ public class Board {
 		}
 	}
 
-	public void validSpaces(char player, char opponent, HashSet<XY> Spots) {
+	/**
+	 * @param validSpaces method to run through valid moves
+	 * @param clear       for holding clear spots
+	 * @param player      holds current player variable
+	 * @param opponent    holds current opponent variable
+	 * @param Spots       holds current valid spots
+	 */
 
-		char clear = '_';
-		int up = 1;
-		int dn = -1;
+	/*
+	 * validSpaces processes all possible valid spots in a nested loop, checkMethod
+	 * moved out to make it neater
+	 */
+
+	public void validSpaces(char player, char opponent, HashSet<XY> Spots) {
 
 		for (int i = 0; i < 8; ++i) {
 			for (int k = 0; k < 8; ++k) {
@@ -84,9 +111,28 @@ public class Board {
 
 	}
 
+	/**
+	 * 
+	 * @param k        to hold coordinates from validSpots
+	 * @param i        to hold coordinates from validSpots
+	 * @param opponent holds current opponent
+	 * @param player   holds current opponent
+	 * @param Spots    holds current valid spots - add in this nw
+	 * @param x        holds direction coordinates
+	 * @param y        holds direction coordinates
+	 * @param K        holds original value of k
+	 * @param I        holds original value of i
+	 */
+
+	/*
+	 * This method checks various spots with coordinates provided by validMoves,
+	 * stores valid moves in Spots
+	 */
+
 	public void checkMethod(int k, int i, char opponent, char player, HashSet<XY> Spots, int x, int y) {
 
 		if (board[i][k] == opponent) {
+
 			int K = k;
 			int I = i;
 
@@ -106,6 +152,12 @@ public class Board {
 			}
 		}
 	}
+
+	/**
+	 * 
+	 * @param board char 2d array - holds board information
+	 */
+	// This method prints the board to the screen
 
 	public void showBoard(char[][] board) {
 
@@ -128,6 +180,15 @@ public class Board {
 		System.out.println();
 	}
 
+	/**
+	 * @param endGame       method to determine if game is over
+	 * @param whiteLocation stores locations of white pieces
+	 * @param blackLocation stores locations of black pieces
+	 * @param whiteScore    white piece points
+	 * @param blackScore    black piece points
+	 * @param pointsToGo    spaces left blank on board
+	 * @return hold returns what scenario should happen
+	 */
 	public int endGame(Set<XY> whiteLocation, Set<XY> blackLocation) {
 
 		scoreUpdate();
@@ -158,6 +219,12 @@ public class Board {
 		return hold;
 	}
 
+	/**
+	 * @param gameOver boolean to send back gameover true or false
+	 * @param hold     holds scenario to print
+	 * @param board    to access scores from board instance
+	 * @return end returns true or false for game over - false by default
+	 */
 	public static boolean gameOver(int hold, Board board) {
 
 		boolean end = false;
@@ -166,10 +233,10 @@ public class Board {
 			System.out.println("Draw!");
 			end = true;
 		} else if (hold == 1) {
-			System.out.println("White wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			System.out.println("White wins!\nWhite\tBlack\n" + board.whiteScore + "\t" + board.blackScore);
 			end = true;
 		} else if (hold == 2) {
-			System.out.println("Black wins!\nWhite\tBlack" + board.whiteScore + "\t" + board.blackScore);
+			System.out.println("Black wins!\nWhite\tBlack\n" + board.whiteScore + "\t" + board.blackScore);
 			end = true;
 
 		} else {
@@ -179,11 +246,25 @@ public class Board {
 		return end;
 	}
 
+	/**
+	 * @param HashSet  validSpots method for processing valid spots with hashset
+	 * @param player   current player
+	 * @param opponent current opponent
+	 * @return spots hashset
+	 */
+
 	public HashSet<XY> validSpots(char player, char opponent) {
 		HashSet<XY> Spots = new HashSet<>();
 		validSpaces(player, opponent, Spots);
 		return Spots;
 	}
+
+	/**
+	 * @param displayValidMoves method prints moves
+	 * @param locations         valid move locations
+	 * @param player            current player
+	 * @param opponent          current opponent
+	 */
 
 	public void displayValidMoves(HashSet<XY> locations, char player, char opponent) {
 
@@ -200,108 +281,44 @@ public class Board {
 		int k = p.num;
 
 		board[i][k] = player;
+		
+		setMoves(p, opponent, player, 1, 1);
+		setMoves(p, opponent, player, 1, -1);
+		setMoves(p, opponent, player, -1, 1);
+		setMoves(p, opponent, player, -1, -1);
+		setMoves(p, opponent, player, -1, 0);
+		setMoves(p, opponent, player, 0, -1);
+		setMoves(p, opponent, player, 0, 1);
+		setMoves(p, opponent, player, 1, 0);
 
-		// upper case I K to hold original variables through move setting
-		int I = i;
-		int K = k;
-
-		if (i - 1 >= 0 && k - 1 >= 0 && board[--i][--k] == opponent) {
-			i--;
-			k--;
-			while (i > 0 && k > 0 && board[i][k] == opponent) {
-				i--;
-				k--;
-			}
-			if (i >= 0 && k >= 0 && board[i][k] == player) {
-				while (i != I - 1 && k != K - 1) {
-					board[++i][++k] = player;
-				}
-			}
-		}
-		i = I;
-		k = K;
-
-		if (--i >= 0 && board[--i][k] == opponent) {
-			i = i - 1;
-			while (i > 0 && board[i][k] == opponent)
-				i--;
-			if (i >= 0 && board[i][k] == player) {
-				while (i != I - 1)
-					board[++i][k] = player;
-			}
-		}
-		i = I;
-		if (i - 1 >= 0 && k + 1 <= 7 && board[i - 1][k + 1] == opponent) {
-			i = i - 1;
-			k = k + 1;
-			while (i > 0 && k < 7 && board[i][k] == opponent) {
-				i--;
-				k++;
-			}
-			if (i >= 0 && k <= 7 && board[i][k] == player) {
-				while (i != I - 1 && k != K + 1)
-					board[++i][--k] = player;
-			}
-		}
-		i = I;
-		k = K;
-		if (k - 1 >= 0 && board[i][k - 1] == opponent) {
-			k = k - 1;
-			while (k > 0 && board[i][k] == opponent)
-				k--;
-			if (k >= 0 && board[i][k] == player) {
-				while (k != K - 1)
-					board[i][++k] = player;
-			}
-		}
-		k = K;
-		if (k + 1 <= 7 && board[i][k + 1] == opponent) {
-			k = k + 1;
-			while (k < 7 && board[i][k] == opponent)
-				k++;
-			if (k <= 7 && board[i][k] == player) {
-				while (k != K + 1)
-					board[i][--k] = player;
-			}
-		}
-		k = K;
-		if (i + 1 <= 7 && k - 1 >= 0 && board[i + 1][k - 1] == opponent) {
-			i = i + 1;
-			k = k - 1;
-			while (i < 7 && k > 0 && board[i][k] == opponent) {
-				i++;
-				k--;
-			}
-			if (i <= 7 && k >= 0 && board[i][k] == player) {
-				while (i != I + 1 && k != K - 1)
-					board[--i][++k] = player;
-			}
-		}
-		i = I;
-		k = K;
-		if (i + 1 <= 7 && board[i + 1][k] == opponent) {
-			i = i + 1;
-			while (i < 7 && board[i][k] == opponent)
-				i++;
-			if (i <= 7 && board[i][k] == player) {
-				while (i != I + 1)
-					board[--i][k] = player;
-			}
-		}
-		i = I;
-
-		if (i + 1 <= 7 && k + 1 <= 7 && board[i + 1][k + 1] == opponent) {
-			i = i + 1;
-			k = k + 1;
-			while (i < 7 && k < 7 && board[i][k] == opponent) {
-				i++;
-				k++;
-			}
-			if (i <= 7 && k <= 7 && board[i][k] == player)
-				while (i != I + 1 && k != K + 1)
-					board[--i][--k] = player;
-		}
 	}
+
+
+	public void setMoves(XY p, char opponent, char player, int x, int y) {
+		
+			int i = p.let; 
+			int k = p.num;
+		
+				int K = k;
+				int I = i;
+
+				i = i + x;
+				k = k + y;
+
+				if (i >= 0 && i <= 7 && k >= 0 && k <= 7 && board[i][k] == opponent) {
+					i = i - x;
+					k = k - y;
+					while (i < 7 && i > 0 && k < 7 && k > 0 && board[i][k] == opponent) {
+						i = i + x;
+						k = k + y;
+					}
+			if (i <= 7 && i >= 0 && k <= 7 && k >= 0 && board[i][k] == player) {
+						while (i != I - x && k != K - y) {
+							
+							board[K][I] = player;
+					}
+				}}
+		}
 
 	public void scoreUpdate() {
 

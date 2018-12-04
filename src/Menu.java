@@ -11,7 +11,8 @@ public class Menu {
 	
 	 /*Declaring choice class
 	 * @param mainMenuChoice - class used to access choices
-	 * @param userChoice used to acces main menu options
+	 * @param userChoice used to access main menu options
+	 * @param quit boolean used to keep menu in 
 	 */
 	//Choice mainMenuChoice = new Choice();
 	int userChoice;
@@ -73,8 +74,6 @@ public class Menu {
 				}
 				
 			Othello.PvP(board);
-		     
-			Menu.displayMenu();
 		}
 		 
 		if(userChoice == 2) {
@@ -85,6 +84,12 @@ public class Menu {
 			Othello.PvP(load);
 			
 		}
+		if(userChoice == 3) {
+			System.out.println("Welcome to Othello.\nOthello is a board game, where the goal is to have the most pieces on the board at the end of the game.");
+			System.out.println("The game will show you what moves are placeable. Select a move shown as a placeable slot and the game will process it.");
+			System.out.println("If the move is invalid, the game will tell you. This is a game meant for two players.");
+			
+		}
 		
 		if(userChoice == 4) {
 			System.out.println("Thank you for playing. Goodbye.");
@@ -93,7 +98,7 @@ public class Menu {
 		do{
 			processUserChoices(tempInfo);
 		}
-		while(userChoice != 5);
+		while(userChoice != 4);
 	}
 }
 	
