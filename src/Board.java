@@ -55,6 +55,12 @@ public class Board {
 			this.num = num;
 		}
 
+		@Override
+		public boolean equals(Object o) {
+			return o.hashCode() == this.hashCode();
+		}
+
+		@Override
 		public int hashCode() {
 			return Integer.parseInt(let + "" + num);
 		}
@@ -98,7 +104,7 @@ public class Board {
 			for (int k = 0; k < 8; ++k) {
 
 				// if spaces on a board = opponent then
-				checkMethod(k, i, opponent, player, Spots, 1, 1);
+
 				checkMethod(k, i, opponent, player, Spots, 1, -1);
 				checkMethod(k, i, opponent, player, Spots, -1, 1);
 				checkMethod(k, i, opponent, player, Spots, -1, -1);
@@ -106,6 +112,7 @@ public class Board {
 				checkMethod(k, i, opponent, player, Spots, 0, -1);
 				checkMethod(k, i, opponent, player, Spots, 0, 1);
 				checkMethod(k, i, opponent, player, Spots, 1, 0);
+				checkMethod(k, i, opponent, player, Spots, 1, 1);
 			}
 		}
 
@@ -269,20 +276,23 @@ public class Board {
 	public void displayValidMoves(HashSet<XY> locations, char player, char opponent) {
 
 		for (XY p : locations)
-			board[p.let][p.num] = '*';
+			board[p.let][p.num] = '|';
 		showBoard(board);
 		for (XY p : locations)
 			board[p.let][p.num] = clear;
 	}
 
+	/**
+	 * @param moveSet  method to automise setting pieces
+	 * @param p        name of hashset used to store points
+	 * @param player   current player
+	 * @param opponent current opponent
+	 */
 	public void moveSet(XY p, char player, char opponent) {
 
 		int i = p.let;
 		int k = p.num;
 
-		board[i][k] = player;
-		
-		setMoves(p, opponent, player, 1, 1);
 		setMoves(p, opponent, player, 1, -1);
 		setMoves(p, opponent, player, -1, 1);
 		setMoves(p, opponent, player, -1, -1);
@@ -290,35 +300,75 @@ public class Board {
 		setMoves(p, opponent, player, 0, -1);
 		setMoves(p, opponent, player, 0, 1);
 		setMoves(p, opponent, player, 1, 0);
-
+		setMoves(p, opponent, player, 1, 1);
 	}
 
+	/**
+	 * @para setMoves method with function to set pieces
+	 * @param p        is hashset used to store points
+	 * @param opponent current opponent
+	 * @param player   current player
+	 * @param x        directional value
+	 * @param y        directional value
+	 */
 
 	public void setMoves(XY p, char opponent, char player, int x, int y) {
-		
-			int i = p.let; 
-			int k = p.num;
-		
-				int K = k;
-				int I = i;
 
+		int i = p.let;
+		int k = p.num;
+
+		board[i][k] = player;
+
+		int K = k;
+		int I = i;
+
+		i = i + x;
+		k = k + y;
+
+		if (i <= 7 && i >= 0 && k <= 7 && k >= 0 && board[i][k] == opponent) {
+			i = i + x;
+			while (i < 7 && i > 0 && k < 7 && k > 0 && board[i][k] == opponent)
 				i = i + x;
-				k = k + y;
+			k = k - y;
+			if (i <= 7 && board[i][k] == player) {
+				while (i != I + x || k != K + y) {
 
-				if (i >= 0 && i <= 7 && k >= 0 && k <= 7 && board[i][k] == opponent) {
-					i = i - x;
-					k = k - y;
-					while (i < 7 && i > 0 && k < 7 && k > 0 && board[i][k] == opponent) {
-						i = i + x;
-						k = k + y;
+					if (x == 0) {
+						if (y == 1) {
+							board[i][--k] = player;
+						} else if (y == -1) {
+							board[i][++k] = player;
+						}
+					} else if (x == -1) {
+						if (y == -1) {
+							board[++i][++k] = player;
+						}
+
+						else if (y == 0) {
+							board[++i][k] = player;
+						} else if (y == 1) {
+							board[++i][--k] = player;
+						}
+					} else if (x == 1) {
+						if (y == -1) {
+							board[--i][++k] = player;
+						} else if (y == 0) {
+							board[--i][k] = player;
+						} else if (y == 1) {
+							board[--i][--k] = player;
+						}
 					}
-			if (i <= 7 && i >= 0 && k <= 7 && k >= 0 && board[i][k] == player) {
-						while (i != I - x && k != K - y) {
-							
-							board[K][I] = player;
-					}
-				}}
+
+				}
+			}
 		}
+	}
+
+	/**
+	 * @param pointsToGo blank spots left on board
+	 * @param blackScore black pieces on board
+	 * @param whiteSCore white peices on board
+	 */
 
 	public void scoreUpdate() {
 
@@ -340,6 +390,11 @@ public class Board {
 		}
 	}
 
+	/**
+	 * @param changeX method to change letter to numerical value regardless of case
+	 * @param x
+	 * @return value, or -1 if somehow the letter isn't valid
+	 */
 	public int changeX(char x) {
 		if (x == 'a' || x == 'A') {
 			return 0;

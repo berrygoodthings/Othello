@@ -9,8 +9,21 @@ import java.io.PrintStream;
 import java.util.HashSet;
 import java.util.InputMismatchException;
 
+/**
+ * 
+ * @author Laura Hutchison Dec 2018
+ * @version 1.0
+ *
+ */
+
+//class Othello to handle the heavy work, such as getting moves and displaying most info 
 public class Othello {
 
+	/**
+	 * @param turn 1 = black, 2 = white - used to load whose turn it ended on and
+	 *             who goes first
+	 * @param move new XY class to load and hold move
+	 */
 	public static int turn = 1;
 
 	public static void PvP(Board board) {
@@ -23,6 +36,14 @@ public class Othello {
 			whiteFirst(move, board);
 		}
 	}
+
+	/**
+	 * @param readText       file reader to read saves
+	 * @param bufferedReader for reading the save
+	 * @param holdChoice     holds what save and then holds temp info
+	 * @param                board[][] board is loaded here as 2d array
+	 * @return board[][] to board menu for board class
+	 */
 
 	public static char[][] loadGame() {
 		Scanner input = new Scanner(System.in);
@@ -93,11 +114,16 @@ public class Othello {
 		return board;
 	}
 
+	/**
+	 * @param check     int to check where to save game
+	 * @param isNumeric to check if the input is at least a number
+	 * @param board     holds the 2d array to be saved
+	 */
 	public static void saveGame(Board board) {
 
 		Scanner input = new Scanner(System.in);
 		int check = 0;
-		
+
 		System.out.println("Please enter slot 1-3 to save the game.");
 
 		boolean isNumeric = false;
@@ -105,7 +131,7 @@ public class Othello {
 		while (!isNumeric) {
 			try {
 				check = input.nextInt();
-				if(check > 3 || check < 1) {
+				if (check > 3 || check < 1) {
 					System.out.println("Enter a number between 1 and 3.");
 					check = input.nextInt();
 				}
@@ -116,7 +142,7 @@ public class Othello {
 				input.nextInt();// Advance the scanner
 			}
 		}
-				
+
 		try {
 
 			PrintStream ps = new PrintStream(new FileOutputStream("save" + check + ".txt"));
@@ -143,6 +169,15 @@ public class Othello {
 		System.out.println("The game has been saved in slot " + check + ".");
 	}
 
+	/**
+	 * @param player    string to display black or white for current player
+	 * @param scan      scanner to take input
+	 * @param input     string to hold input
+	 * @param playerNum
+	 * @param board     to import board[][] from Board class board for moves
+	 * @param choice    holds choice
+	 * @return input of move
+	 */
 	public static String placeMove(int playerNum, Board board) {
 
 		String player = new String();
@@ -156,8 +191,8 @@ public class Othello {
 		if (turn == 2) {
 			player = ("White");
 		}
-		
-		System.out.println("It is "+player+"'s turn.");
+
+		System.out.println("It is " + player + "'s turn.");
 		System.out.println("1. Place a move.\n2. Save game.\n3. Save and exit.");
 
 		boolean isNumeric = false;
@@ -226,9 +261,20 @@ public class Othello {
 		return input;
 	}
 
+	/**
+	 * @param blackFirst    moves, but with black first
+	 * @param skip          to determine if you skip your turn due to no pieces
+	 * @param move          is to input valid move
+	 * @param board         for board.board[][]
+	 * @param input         string to hold input
+	 * @param blackLocation black pieces places
+	 * @param whiteLocation white piece locations
+	 * @param turn          to set whose turn it is if player saves
+	 * @param end           if game is over boolean
+	 */
+
 	public static void blackFirst(Board.XY move, Board board) {
 
-		int result;
 		Boolean skip;
 		String input;
 
@@ -237,14 +283,14 @@ public class Othello {
 
 		do {
 			turn = 1;
-			
+
 			HashSet<Board.XY> blackLocation = board.validSpots('B', 'W');
 			HashSet<Board.XY> whiteLocation = board.validSpots('W', 'B');
 
 			board.displayValidMoves(blackLocation, 'B', 'W');
 			int o = board.endGame(whiteLocation, blackLocation);
 			boolean end = board.gameOver(o, board);
-			if(end) {
+			if (end) {
 				break;
 			}
 			if (blackLocation.isEmpty()) {
@@ -285,7 +331,7 @@ public class Othello {
 
 			}
 			skip = false;
-			
+
 			turn = 2;
 
 			whiteLocation = board.validSpots('W', 'B');
@@ -294,7 +340,7 @@ public class Othello {
 			board.displayValidMoves(whiteLocation, 'W', 'B');
 			o = board.endGame(whiteLocation, blackLocation);
 			end = board.gameOver(o, board);
-			if(end) {
+			if (end) {
 				break;
 			}
 
@@ -306,7 +352,7 @@ public class Othello {
 			if (!skip) {
 				input = placeMove(turn, board);
 
-				while (input.length() > 2) {
+				while (input.length() > 2 || input.length() == 1) {
 					System.out.println("Try again!");
 					input = scan.next();
 
@@ -331,14 +377,25 @@ public class Othello {
 				board.moveSet(move, 'W', 'B');
 				board.scoreUpdate();
 				System.out.println("Black\tWhite\n" + board.blackScore + "\t" + board.whiteScore);
-				}
+			}
 		} while (skip == false);
 
 	}
 
+	/**
+	 * @param whiteFirst    moves, but with black first
+	 * @param skip          to determine if you skip your turn due to no pieces
+	 * @param move          is to input valid move
+	 * @param board         for board.board[][]
+	 * @param input         string to hold input
+	 * @param blackLocation black pieces places
+	 * @param whiteLocation white piece locations
+	 * @param turn          to set whose turn it is if player saves
+	 * @param end           if game is over boolean
+	 */
+
 	public static void whiteFirst(Board.XY move, Board board) {
 
-		int result;
 		Boolean skip;
 		String input;
 
@@ -347,14 +404,14 @@ public class Othello {
 
 		do {
 			turn = 2;
-			
+
 			HashSet<Board.XY> blackLocation = board.validSpots('B', 'W');
 			HashSet<Board.XY> whiteLocation = board.validSpots('W', 'B');
 
 			board.displayValidMoves(whiteLocation, 'W', 'B');
 			int o = board.endGame(whiteLocation, blackLocation);
 			boolean end = board.gameOver(o, board);
-			if(end) {
+			if (end) {
 				break;
 			}
 
@@ -396,17 +453,17 @@ public class Othello {
 
 			}
 			skip = false;
-			
+
 			turn = 1;
-			
+
 			whiteLocation = board.validSpots('W', 'B');
 			blackLocation = board.validSpots('B', 'W');
 
 			board.displayValidMoves(blackLocation, 'B', 'W');
-			
+
 			o = board.endGame(whiteLocation, blackLocation);
 			end = board.gameOver(o, board);
-			if(end) {
+			if (end) {
 				break;
 			}
 
